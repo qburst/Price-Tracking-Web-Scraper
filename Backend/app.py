@@ -47,6 +47,7 @@ def submit_results():
     search_text = request.json.get("search_text")
     source = request.json.get("source")
 
+    product_results = []
     for result in results:
         product_result = ProductResult(
             name=result['name'],
@@ -56,8 +57,9 @@ def submit_results():
             search_text=search_text,
             source=source
         )
-        db.session.add(product_result)
+        product_results.append(product_result)
 
+    db.session.bulk_save_objects(product_results)
     db.session.commit()
     response = {'message': 'Received data successfully'}
     return jsonify(response), 200
